@@ -1,48 +1,52 @@
-/*. 字符串中必须仅有P, A, T这三种字符，不可以包含其它字符；
-2. 任意形如 xPATx 的字符串都可以获得“答案正确”，其中 x 或者是空字符串，或者是仅由字母 A 组成的字符串；
-3. 如果 aPbTc 是正确的，那么 aPbATca 也是正确的，其中 a, b, c 均或者是空字符串，或者是仅由字母 A 组成的字符串。
-
-现在就请你为PAT写一个自动裁判程序，判定哪些字符串是可以获得“答案正确”的。*/
+/*
+输入样例：
+3 4 -5 2 6 1 -2 0
+输出样例：
+12 3 -10 1 6 0
+*/
+#include <string>
 #include <iostream>
-#include <cstring>
-#include <regex>
-using namespace std;
-/* run this program using the console pauser or add your own getch, system("pause") or input loop */
-bool CheckFormat(string sstr)
+#include <algorithm>
+#include <vector>
+using std::cin;
+using std::cout;
+using std::endl;
+using std::string;
+using std::vector;
+
+int main()
 {
-	regex STD("^*APAT*b");
-	bool bb=regex_match(sstr,STD);
-	return bb;
-}
-string intconvertchar(int num)
-{
-	switch(num)
+	vector<int> vec;
+	char ch;
+	int temp;
+	while(cin>>temp)
 	{
-		case 0:return "ling";
-		case 1:return "yi";
-		case 2:return "er";
-		case 3:return "san";
-		case 4:return "si";
-		case 5:return "wu";
-		case 6:return "liu";
-		case 7:return "qi";
-		case 8:return "ba";
-		case 9:return "jiu";
-		default:
-			return "san";
+		vec.push_back(temp);
+		ch=getchar();
+		if(ch=='\n')
+			break;
+		if(ch==' ')
+			continue;
 	}
-	
+	int length=vec.size();
+	int i,j;
+	vector<int> Deriva;
+	for(i=0;i<length/2;i++)
+	{
+		if(vec[2*i+1]==0)
+		{
+			//cout<<"i="<<2*i+1<<endl;
+			continue;
+		}
+		int temp1=vec[2*i]*vec[2*i+1];
+		Deriva.push_back(temp1);
+		int temp2=vec[2*i+1]-1;
+		Deriva.push_back(temp2);		
+	}
+	int len=Deriva.size();
+	for(i=0;i<len-1;i++)
+		cout<<Deriva[i]<<" ";
+	cout<<Deriva[len-1];
+	return 0;	
 }
-int main(int argc, char** argv) {
-string str;
-getline(cin,str);
-bool flag=CheckFormat(str);
-if(flag==true)
-    cout<<"答案正确";
-else
-	cout<<"答案错误";
-	return 0;
-}
-
-
 
