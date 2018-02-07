@@ -34,6 +34,10 @@ struct ChainStruct
 	string nextaddre;
 	int order;//表示链表的排序 其中0表示乱序 所有的都没有排序 
 };
+bool compare(ChainStruct a,ChainStruct b)
+{
+	return a.order<b.order;
+}
 int main()
 {
 	string initaladdress;
@@ -57,22 +61,68 @@ int main()
 	vector<ChainStruct> vec;
 	string temp=initaladdress;
 	int count=0;
-	while(temp!="-1")
+     while(temp!="-1")	  
 	{
+		
 		it=mymap.find(temp);
 		it->second.order=++count;
 		temp=it->second.nextaddre;	
 		tempstruct=it->second;
 		vec.push_back(tempstruct);
+		if(count==N)
+			break;
 	}
-	int 
+	int temnum=0;
+	int len=vec.size();
 	
-	/*it=mymap.begin();
-	while(it!=mymap.end())
+	if(K==1)
 	{
-		cout<<it->first<<" "<<(it->second).num<<" "<<(it->second).nextaddre<<" "<<it->second.order<<endl;
-		it++;
-	}*/
+	
+    }
+		
+	else
+	{
+	int inversetime=N/K;//反转次数  N 正整数个数  K反转个数 
+	int remaintime=N%K;//剩余的个数
+	//cout<<inversetime<<endl;
+	//cout<<remaintime<<endl; 
+	for(i=0;i<inversetime;i++)
+	{
+		//cout<<"the "<<i<<" time"<<endl;
+		temnum=i*K+K+1;
+		vec[i*K].order=temnum-vec[i*K].order;
+		vec[i*K+K-1].order=temnum-vec[i*K+K-1].order;
+		vec[i*K+K-1].nextaddre=vec[i*K+K-2].address;
+		for(j=i*K+1;j<i*K+K-1;j++)
+		{
+			vec[j].order=temnum-vec[j].order;
+			vec[j].nextaddre=vec[j-1].address;
+    	}	
+    	if(remaintime==0)
+    	{
+    		vec[i*K].nextaddre="-1";
+		}
+		else
+			{
+				if(i==inversetime-1)
+				{
+					vec[i*K].nextaddre=vec[inversetime*K].address;
+				}
+				else
+				{
+					vec[i*K].nextaddre=vec[i*K+2*K-1].address;
+				}
+			}
+	} 
+	sort(vec.begin(),vec.end(),compare);
+	
+	}
+	
+	for(i=0;i<N;i++)
+	{
+		printf("%s %d %s\n",vec[i].address.c_str(),vec[i].num,vec[i].nextaddre.c_str());
+	//cout<<vec[i].address<<" "<<vec[i].num<<" "<<vec[i].nextaddre<<" "<<vec[i].order<<endl;
+	}	
     return 0;  
 }
 
