@@ -43,7 +43,8 @@ int main()
 	string initaladdress;
 	int N;//正整数个数 
 	int K;//反转个数
-	cin>>initaladdress;
+	//scanf("%s%d%d",initaladdress.c_str(),&N,&K);
+    cin>>initaladdress;
 	cin>>N;
 	cin>>K; 
 	map<string,ChainStruct>mymap;
@@ -61,6 +62,12 @@ int main()
 	vector<ChainStruct> vec;
 	string temp=initaladdress;
 	int count=0;
+	if(temp=="-1")
+	{
+		printf("-1\n"); 
+		return 0;
+	}
+	
      while(temp!="-1")	  
 	{
 		
@@ -72,8 +79,10 @@ int main()
 		if(count==N)
 			break;
 	}
+	//cout<<"count="<<count<<endl;
+	N=count;
 	int temnum=0;
-	int len=vec.size();
+	//int len=vec.size();
 	
 	if(K==1)
 	{
@@ -114,13 +123,14 @@ int main()
 				}
 			}
 	} 
+	
 	sort(vec.begin(),vec.end(),compare);
 	
 	}
-	
+	vec[N-1].nextaddre="-1";//test
 	for(i=0;i<N;i++)
 	{
-		printf("%s %d %s\n",vec[i].address.c_str(),vec[i].num,vec[i].nextaddre.c_str());
+		printf("%-5s %d %-5s\n",vec[i].address.c_str(),vec[i].num,vec[i].nextaddre.c_str());
 	//cout<<vec[i].address<<" "<<vec[i].num<<" "<<vec[i].nextaddre<<" "<<vec[i].order<<endl;
 	}	
     return 0;  
