@@ -1,4 +1,3 @@
-
 #include <string>
 #include <iostream>
 #include <algorithm>
@@ -11,128 +10,81 @@ using std::endl;
 using std::string;
 using std::vector;
 using std::map;
-
-bool isPrime(int num)
-{
-    if(num==0||num==1)
-    {
-        return false;
-    }
-    int i;
-    for(i=2;i*i<=num;i++)
-    {
-        if(num%i==0)
-            return false;
-    }
-    return true;
-}
-
 struct ChainStruct
 {
-	string address;
+	int  address;
 	int num;
-	string nextaddre;
-	int order;//±íÊ¾Á´±íµÄÅÅĞò ÆäÖĞ0±íÊ¾ÂÒĞò ËùÓĞµÄ¶¼Ã»ÓĞÅÅĞò 
+	int nextaddre;
+	//int order;
 };
-bool compare(ChainStruct a,ChainStruct b)
-{
-	return a.order<b.order;
-}
+
+
 int main()
 {
-	string initaladdress;
-	int N;//ÕıÕûÊı¸öÊı 
-	int K;//·´×ª¸öÊı
-	//scanf("%s%d%d",initaladdress.c_str(),&N,&K);
-    cin>>initaladdress;
-	cin>>N;
-	cin>>K; 
-	map<string,ChainStruct>mymap;
+	int  initaladdress;
+    int N;//æ­£æ•´æ•°ä¸ªæ•° 
+    int K;//åè½¬ä¸ªæ•°
+	scanf("%d",&initaladdress);
+	scanf("%d",&N);
+	scanf("%d",&K);
+	map<int,ChainStruct>mymap;
 	ChainStruct tempstruct;
-	tempstruct.order=0;
-	int i,j;
-	for(i=0;i<N;i++)
-	{
-		cin>>tempstruct.address;
-		cin>>tempstruct.num;
-		cin>>tempstruct.nextaddre;
-		mymap.insert(std::make_pair(tempstruct.address,tempstruct));
-	}
-	map<string,ChainStruct>::iterator it;
-	vector<ChainStruct> vec;
-	string temp=initaladdress;
-	int count=0;
-	if(temp=="-1")
-	{
-		printf("-1\n"); 
-		return 0;
+  int i,j;
+  for(i=0;i<N;i++)
+  {
+  	scanf("%d",&tempstruct.address);
+  	scanf("%d",&tempstruct.num);
+  	scanf("%d",&tempstruct.nextaddre);
+    mymap.insert(std::make_pair(tempstruct.address,tempstruct));
+  }
+  	map<int,ChainStruct>::iterator it;
+  	/*for(it=mymap.begin();it!=mymap.end();it++)
+  	{
+  		cout<<it->first<<" "<<it->second.address<<" "<<it->second.num<<" "<<it->second.nextaddre<<endl;
+	  }*/
+  	vector<ChainStruct> vec;
+  	int temp=initaladdress;
+  	int count=0;
+  	if(temp==-1)
+  	{
+  		printf("-1\n");
+  		return 0;
 	}
 	
-     while(temp!="-1")	  
+	while(temp!=-1)
 	{
-		
-		it=mymap.find(temp);
-		it->second.order=++count;
-		temp=it->second.nextaddre;	
-		tempstruct=it->second;
-		vec.push_back(tempstruct);
-		if(count==N)
-			break;
+	 it=mymap.find(temp);
+	 if(it==mymap.end())
+	 	break;
+    	++count;
+     temp=it->second.nextaddre;  
+     tempstruct=it->second;
+     vec.push_back(tempstruct);
+     if(count==N)
+      	break;
 	}
-	//cout<<"count="<<count<<endl;
-	N=count;
-	int temnum=0;
-	//int len=vec.size();
-	
-	if(K==1)
-	{
-	
-    }
-		
-	else
-	{
-	int inversetime=N/K;//·´×ª´ÎÊı  N ÕıÕûÊı¸öÊı  K·´×ª¸öÊı 
-	int remaintime=N%K;//Ê£ÓàµÄ¸öÊı
-	//cout<<inversetime<<endl;
-	//cout<<remaintime<<endl; 
+  	N=count;
+  	vector<ChainStruct> endvec;
+	int inversetime=N/K;//åè½¬æ¬¡æ•°  N æ­£æ•´æ•°ä¸ªæ•°  Kåè½¬ä¸ªæ•° 
+	int remaintime=N%K;//å‰©ä½™çš„ä¸ªæ•°
 	for(i=0;i<inversetime;i++)
 	{
-		//cout<<"the "<<i<<" time"<<endl;
-		temnum=i*K+K+1;
-		vec[i*K].order=temnum-vec[i*K].order;
-		vec[i*K+K-1].order=temnum-vec[i*K+K-1].order;
-		vec[i*K+K-1].nextaddre=vec[i*K+K-2].address;
-		for(j=i*K+1;j<i*K+K-1;j++)
+		for(j=i*K+K-1;j>=i*K;j--)
 		{
-			vec[j].order=temnum-vec[j].order;
-			vec[j].nextaddre=vec[j-1].address;
-    	}	
-    	if(remaintime==0)
-    	{
-    		vec[i*K].nextaddre="-1";
+			endvec.push_back(vec[j]);
 		}
-		else
-			{
-				if(i==inversetime-1)
-				{
-					vec[i*K].nextaddre=vec[inversetime*K].address;
-				}
-				else
-				{
-					vec[i*K].nextaddre=vec[i*K+2*K-1].address;
-				}
-			}
-	} 
-	
-	sort(vec.begin(),vec.end(),compare);
-	
 	}
-	vec[N-1].nextaddre="-1";//test
-	for(i=0;i<N;i++)
+	for(i=inversetime*K;i<N;i++)
 	{
-		printf("%-5s %d %-5s\n",vec[i].address.c_str(),vec[i].num,vec[i].nextaddre.c_str());
-	//cout<<vec[i].address<<" "<<vec[i].num<<" "<<vec[i].nextaddre<<" "<<vec[i].order<<endl;
-	}	
-    return 0;  
+		endvec.push_back(vec[i]);
+	}
+    endvec[N-1].nextaddre=-1;
+	for(i=0;i<N-1;i++)
+  {
+  	endvec[i].nextaddre=endvec[i+1].address;
+    printf("%05d %d %05d\n",endvec[i].address,endvec[i].num,endvec[i].nextaddre);
+  //cout<<vec[i].address<<" "<<vec[i].num<<" "<<vec[i].nextaddre<<" "<<vec[i].order<<endl;
+  }  	
+  	printf("%05d %d %d\n",endvec[N-1].address,endvec[N-1].num,-1);
+	return 0;
 }
-
