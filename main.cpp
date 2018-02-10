@@ -1,90 +1,88 @@
+//
+//  main.cpp
+//  0208
+//
+//  Created by lemon_wang on 18/2/8.
+//  Copyright ? 2018�� lemon_wang. All rights reserved.
+//
+
 #include <string>
 #include <iostream>
 #include <algorithm>
 #include <vector>
 #include <stdio.h>
-#include<map>
+#include   <map>
 using std::cin;
 using std::cout;
 using std::endl;
 using std::string;
 using std::vector;
 using std::map;
-struct ChainStruct
+
+bool isPrime(int num)
 {
-	int  address;
-	int num;
-	int nextaddre;
-	//int order;
-};
-
-
+    if(num==0||num==1)
+    {
+        return false;
+    }
+    int i;
+    for(i=2;i*i<=num;i++)
+    {
+        if(num%i==0)
+            return false;
+    }
+    return true;
+}
+bool iicompare(int a,int b)
+{
+	return a<b;
+}
 int main()
 {
-	int  initaladdress;
-    int N;//正整数个数 
-    int K;//反转个数
-	scanf("%d",&initaladdress);
+	int N;
 	scanf("%d",&N);
-	scanf("%d",&K);
-	map<int,ChainStruct>mymap;
-	ChainStruct tempstruct;
-  int i,j;
-  for(i=0;i<N;i++)
-  {
-  	scanf("%d",&tempstruct.address);
-  	scanf("%d",&tempstruct.num);
-  	scanf("%d",&tempstruct.nextaddre);
-    mymap.insert(std::make_pair(tempstruct.address,tempstruct));
-  }
-  	map<int,ChainStruct>::iterator it;
-  	/*for(it=mymap.begin();it!=mymap.end();it++)
-  	{
-  		cout<<it->first<<" "<<it->second.address<<" "<<it->second.num<<" "<<it->second.nextaddre<<endl;
-	  }*/
-  	vector<ChainStruct> vec;
-  	int temp=initaladdress;
-  	int count=0;
-  	if(temp==-1)
-  	{
-  		printf("-1\n");
-  		return 0;
-	}
-	
-	while(temp!=-1)
+	int p;
+	int i,j,k;
+	scanf("%d",&p);
+	int aa[N];
+	//vector<int> aa;
+	int temp;
+	for(i=0;i<N;i++)
 	{
-	 it=mymap.find(temp);
-	 if(it==mymap.end())
-	 	break;
-    	++count;
-     temp=it->second.nextaddre;  
-     tempstruct=it->second;
-     vec.push_back(tempstruct);
-     if(count==N)
-      	break;
+	//	scanf("%d",&temp);
+		cin>>aa[i];
+		//aa.push_back(temp);
 	}
-  	N=count;
-  	vector<ChainStruct> endvec;
-	int inversetime=N/K;//反转次数  N 正整数个数  K反转个数 
-	int remaintime=N%K;//剩余的个数
-	for(i=0;i<inversetime;i++)
+	std::sort(aa,aa+N);
+	//sort(aa.begin(),aa.end(),iicompare);
+	int count=0;
+	i=N-1;
+	int flag=0;
+	while(i>=0)
 	{
-		for(j=i*K+K-1;j>=i*K;j--)
+		k=i;
+		flag=0;
+		for(j=0;j<=k;j++)
 		{
-			endvec.push_back(vec[j]);
+			if(aa[j]*p>=aa[i])
+			{
+				temp=i-j+1;
+				if(temp>count)
+					count=temp;
+				flag=1;
+				k=j;
+				break;
+			}
+		}
+		i--;
+		if(flag==1&&i<=count)
+		{
+			break;
+			
 		}
 	}
-	for(i=inversetime*K;i<N;i++)
-	{
-		endvec.push_back(vec[i]);
-	}
-    endvec[N-1].nextaddre=-1;
-	for(i=0;i<N-1;i++)
-  {
-  	endvec[i].nextaddre=endvec[i+1].address;
-    printf("%05d %d %05d\n",endvec[i].address,endvec[i].num,endvec[i].nextaddre);
-  //cout<<vec[i].address<<" "<<vec[i].num<<" "<<vec[i].nextaddre<<" "<<vec[i].order<<endl;
-  }  	
-  	printf("%05d %d %d\n",endvec[N-1].address,endvec[N-1].num,-1);
+	cout<<count;
 	return 0;
 }
+
+
