@@ -38,131 +38,221 @@ long long GCD(long long a,long long b)
         //b=-b;
     return b;
 }
-void  simplification(long long a,long long b)//分数化成最简形式
+bool isequal(int * conver,int * temp,int N)
 {
-   // int s[4];//s[0] 符号  k a/b  s[1] k  s[2] a s[3] b
-    if(b==0)
+    bool flag=true;
+    int i;
+    for(i=0;i<N;i++)
     {
-        printf("Inf");
-        return ;
-    }
-    int np=0;//存储正负号  0为整数  1为负数
-    long long k;
-    if(a<0)
-    {
-        np=1;
-        a=-a;
-        k=-1;
-    }
-    long long gcd=GCD(a,b);
-    a=a/gcd;
-    b=b/gcd;
-    if(a/b==0&&a!=0)//数值小于1 且分数值不为0
-    {
-       if(np==1)
-       {
-           printf("(-%lld/%lld)",a,b);
-       }
-        else
+        if(conver[i]!=temp[i])
         {
-            printf("%lld/%lld",a,b);
+            flag=false;
+            break;
+        }
+    }
+    return flag;
+}
+    
+bool InsertionSort(int * origin,int * conver,int N)
+{
+    int count=0;
+    bool flag=false;
+    //cout<<"INsertion  "<<N<<endl;
+    int i,j,k;
+    int temp;
+    for(i=1;i<N;i++)
+    {
+        //cout<<i<<endl;
+        for(j=0;j<i;j++)
+        {
+            if(origin[i]<origin[j])
+            {
+                temp=origin[i];
+                k=i;
+                while(k!=j)
+                {
+                    //cout<<k<<" "<<j<<endl;
+                    origin[k]=origin[k-1];
+                    k--;
+                    //cout<<k<<" "<<origin[k]<<k+1<<origin[k+1]<<endl;
+                    
+                }
+                origin[j]=temp;
+            }
+        }
+        flag=isequal(conver,origin,N);
+        if(count==1)
+        {
+            cout<<"Insertion Sort"<<endl;
+            for(i=0;i<N-1;i++)
+                printf("%d ",origin[i]);
+           printf("%d",origin[N-1]);
+            return flag;
+        }
+        if(flag==true)
+        {
+            count++;
         }
         
-        return;
     }
+    return flag;
+}
+void merge(int * array,int low,int mid,int high) // [low,mid)  [mid,high)
+{
+    int temp[high-low];
+    int i=low;
+    int j=mid;
+    int k=0;
+    while(i<mid&&j<high)
+    {
+        if(array[i]<=array[j])
+        {
+            temp[k++]=array[i++];
+        }
+        else
+        {
+            temp[k++]=array[j++];
+        }
+    
+    }
+    while(i<mid)
+    {
+        temp[k++]=array[i++];
+    }
+    while(j<high)
+    {
+        temp[k++]=array[j++];
+    }
+    for(i=low,k=0;i<high;i++,k++)
+    {
+        array[i]=temp[k];
+    }
+}
+
+bool MergeSort(int * origin,int * conver,int N)
+{
+    bool flag=false;
+    int count=0;
+    int i,j,k;
+    for(i=1;i<N;i=i*2)
+    {
+        for(j=0;j<N;j=j+2*i)
+        {
+            if(j+2*i<=N)
+            {
+                merge(origin,j,j+i,j+2*i);
+                //cout<<"merge(j,j+i,j+2*i)"<<endl;
+            }
+            else
+            {
+                if(j+i<=N)
+                {
+                    merge(origin,j,j+i,N);
+                    //cout<<"merge(j,j+i,N)"<<endl;
+                
+                }
+            }
+        }
+        flag=isequal(conver,origin,N);
+        if(count==1)
+         {
+         cout<<"Merge Sort"<<endl;
+         for(i=0;i<N-1;i++)
+         printf("%d ",origin[i]);
+         printf("%d",origin[N-1]);
+         return flag;
+         
+         }
+        if(flag==true)
+        {
+            count++;
+        }
+       
+    
+        
+    }
+    
+    return flag;
+
+}
+void mergeSort(int * origin,int * conver,int N)
+{
+    //bool flag=false;
+    //int count=0;
+    int i,j,k;
+    for(i=1;i<N;i=i*2)
+    {
+        for(j=0;j<N;j=j+2*i)
+        {
+            if(j+2*i<=N)
+            {
+                merge(origin,j,j+i,j+2*i);
+                //cout<<"merge(j,j+i,j+2*i)"<<endl;
+            }
+            else
+            {
+                //if(j+i<=N)
+                //{
+                    merge(origin,j,j+i,N);
+                    //cout<<"merge(j,j+i,N)"<<endl;
+                    
+                //}
+            }
+        }
+     
+        for(k=0;k<N;k++)
+            printf(" %d",origin[k]);
+        printf("\n");
+        
+        
+    }
+    
+   
+    
+}
+void compare(int * origin,int * conver,int N)
+{
+    bool flag=false;
+    int temp[N];
+    int i;
+    for(i=0;i<N;i++)
+    {
+        temp[i]=origin[i];
+    }
+    flag=InsertionSort(origin,conver,N);
+    if(flag==true)
+        return;
     else
     {
-        
-        k=a/b;
-        a=a%b;
-        if(a==0&&np==0)//若用a来判断则b为1时，
-        {
-        printf("%lld",k);
-            return ;
-        }
-        if(a==0&&np==1)
-        {
-            printf("(-%lld)",k);
-            return ;
-        }
-        if(np==0)
-        {
-            printf("%lld %lld/%lld",k,a,b);
-            return ;
-        }
-        else
-        {
-            printf("(-%lld %lld/%lld)",k,a,b);
-        }
-        
+    MergeSort(temp,conver,N);
+        //cout<<"213"<<endl;
+        return;
     }
-    //return s;
-}
-void charactercompute(char c,long long a1,long long b1,long long a2,long long b2)
-{
-    simplification(a1,b1);
-    printf(" %c ",c);
-    simplification(a2,b2);
-    printf(" = ");
-    long long gcd=GCD(a1, b1);
-    a1=a1/gcd;
-    b1=b1/gcd;
-    gcd=GCD(a2,b2);
-    a2=a2/gcd;
-    b2=b2/gcd;
-    long long a3,b3;
-    switch(c)
-    {
-    case '+':
-            a3=a1*b2+a2*b1;
-            b3=b1*b2;
-            
-            break;
-    case '-':
-            a3=a1*b2-a2*b1;
-            b3=b1*b2;
-            break;
-    case '*':
-            a3=a1*a2;
-            b3=b1*b2;
-            break;
-    case '/':
-            a3=a1*b2;
-            b3=a2*b1;
-            if(b3<0)
-            {
-                a3=-a3;
-                b3=-b3;
-            }
-            break;
-    default:
-            break;
-    }
-    simplification(a3,b3);
-    cout<<endl;
-    return ;
 }
 int main()
 {
-    freopen("a.txt","r",stdin);
-    int a1,a2,a5,a6;
-    long long a3;
-    long long a4;
-    a1=12%-8;
-    a2=12/8;
-    a5=12%-3;
-    a6=12/-3;
-    cout<<a1<<" "<<a2<<endl;
-    cout<<a5<<" "<<a6<<endl;
-    long long gcd1=GCD(12,-8);
-    long long gcd2=GCD(12,-3);
-    cout<<gcd1<<endl;
-    cout<<gcd2<<endl;
-   /* long long a1,b1,a2,b2;
-    scanf("%lld/%lld%lld/%lld",&a1,&b1,&a2,&b2);
-    charactercompute('+',a1,b1,a2,b2);
-    charactercompute('-', a1, b1, a2, b2);
-    charactercompute('*', a1, b1, a2, b2);
-    charactercompute('/', a1, b1, a2, b2);*/
+    //freopen("a.txt","r",stdin);
+    int N;
+    cin>>N;
+    int origin[N];
+    int conver[N];
+   /* int InsertArray[N];
+   int MergeArray[N];*/
+    int i,j,k;
+   for(i=0;i<N;i++)
+        scanf("%d",&origin[i]);
+    for(i=0;i<N;i++)
+        scanf("%d",&conver[i]);
+    /* for(i=0;i<N;i++)
+        printf("%d",origin[i]);
+    printf("\n");
+    for(i=0;i<N;i++)
+        printf("%d",conver[i]);
+    printf("\n");*/
+    mergeSort(origin,conver,N);
+    //compare(origin,conver,N);
+  // MergeSort(origin,conver,N);
+   
+   //InsertionSort(origin,conver,N);
     return 0;
 }
