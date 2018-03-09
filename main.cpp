@@ -37,91 +37,61 @@ bool iicompare(int a,int b)
 {
 	return a<b;
 }
-typedef struct rescueteam
-{
-	int count;
-	int resnum;
-}resut;
+
 int main()
 {
-	
-	int N,M,C1,C2;
-	cin>>N>>M>>C1>>C2;
-	int res[N];
-	int shortime[N];//记录C1到每个点的最短路径的次数 
-
-	int flag[N]={0};
-	int resu[N][N];//存储救援队的个数 
+	int N,M;//N the number of nodes     M the number of non-leaf node
+	cin>>N>>M;
+	if(N==1)
+	{
+		cout<<"1";
+		return 0;
+	}
+	int K;
+	int nodecount[N+1]={0};//每个节点的子节点数 
+	int sencount[N+1]={0};//每一层无孩子的个数
+	int levelcount[N+1]={0};//每个节点的层数; 
+	levelcount[1]=1;
+	//vector<int> vec[N+1];
 	int i,j,k;
+	int ID;
+	int temp;
+	int count=1;//record the number of seniority level
 	for(i=0;i<N;i++)
-		scanf("%d",&res[i]);
-	int rode[N][N];
-	for(i=0;i<N;i++)
-		for(j=0;j<N;j++)
-		{
-			rode[i][j]=INF;
-			resu[i][j]=0;
-		}
-	int start,end,temp;
-	for(i=0;i<M;i++)
 	{
-		scanf("%d %d %d",&start,&end,&temp);
-		rode[start][end]=temp;
-		rode[end][start]=temp;
-		resu[start][end]=res[start]+res[end];
-		resu[end][start]=res[start]+res[end];
-		if(start==C1)
+		scanf("%d %d",&ID,&K);
+		nodecount[ID]=K;
+		for(j=0;j<K;j++)
 		{
-			shortime[end]=1;
+			scanf("%d",&temp);
+		//	vec[ID].push_back(temp);
+			levelcount[temp]=levelcount[ID]+1;
+		}
+		if(count<(levelcount[ID]+1))
+		{
+			count=levelcount[ID]+1;
 		}
 	}
-
-
-	flag[C1]=1;
-	int minlen;
-	int node;//record current min node
-	
-	for(k=0;k<N-1;k++)
+	for(i=1;i<=N;i++)
 	{
-		minlen=INF;
-		for(i=0;i<N;i++)
+		if(nodecount[i]==0)
 		{
-			if(flag[i]==0&&(rode[C1][i]<minlen))
-			{
-					minlen=rode[C1][i];
-					node=i;
-			}
+			sencount[levelcount[i]]=sencount[levelcount[i]]+1;
 		}
-		flag[node]=1;
-		//cout<<node<<endl; 
-		for(i=0;i<N;i++)
-		{
-			if(flag[i]==0&&((rode[C1][node]+rode[node][i])<=rode[C1][i]))
-			{
-				
-				if((rode[C1][node]+rode[node][i])<rode[C1][i])
-				{
-					shortime[i]=shortime[node];	
-					resu[C1][i]=resu[C1][node]+res[i];
-				}
-				else  if((rode[C1][node]+rode[node][i])==rode[C1][i])
-				{
-					shortime[i]=shortime[i]+shortime[node];
-					if((resu[C1][node]+res[i])>resu[C1][i])
-					{
-						resu[C1][i]=resu[C1][node]+res[i];
-					}
-				}
-				rode[C1][i]=rode[C1][node]+rode[node][i];
-				
-			}
-			//每次更新路径时，存入最大救援数量和最短距离 
-		}
-	
 	}
-//	cout<<rode[C1][C2]<<" "<<shortime[C2]<<" "<<resu[C1][C2];
-	cout<<shortime[C2]<<" "<<resu[C1][C2];
+/*	if(count==1)
+	{
+		cout<<sencount[i];
+	}
+	else
+	{*/
+		for(i=1;i<count;i++)
+			cout<<sencount[i]<<" ";
+		cout<<sencount[count];
+//	}
+	
 	return 0;
+	
 }
 
 
