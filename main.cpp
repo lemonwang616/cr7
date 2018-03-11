@@ -1,16 +1,26 @@
+//
+//  main.cpp
+//  0208
+//
+//  Created by lemon_wang on 18/2/8.
+//  Copyright ? 2018ǯ lemon_wang. All rights reserved.
+//
+
 #include <string>
 #include <iostream>
 #include <algorithm>
 #include <vector>
 #include <stdio.h>
 #include   <map>
+#include <queue>
 using std::cin;
 using std::cout;
 using std::endl;
 using std::string;
 using std::vector;
 using std::map;
-
+using std::queue;
+#define PT 9999999
 bool isPrime(int num)
 {
     if(num==0||num==1)
@@ -25,234 +35,76 @@ bool isPrime(int num)
     }
     return true;
 }
-long long GCD(long long a,long long b)
+bool iicompare(int a,int b)
 {
-    long long m=a%b;
-    while(m)
-    {
-        a=b;
-        b=m;
-        m=a%b;
-    }
-  //  if(b<0)
-        //b=-b;
-    return b;
+    return a<b;
 }
-bool isequal(int * conver,int * temp,int N)
+
+struct Tree{
+    int node;
+    int * child=NULL;
+    int num=0;
+};
+int main()
 {
-    bool flag=true;
-    int i;
-    for(i=0;i<N;i++)
+    int N,M;//the num of nodes   M the num of leafnodes
+    cin>>N>>M;
+    int i,j,k;
+    Tree tree[100];//vector
+    //vector<Tree>
+    for(i=1;i<=N;i++)
     {
-        if(conver[i]!=temp[i])
+        Tree temp;
+        temp.node=i;
+        tree[i]=temp;
+    }
+    //vector<Tree> trees;
+    int node;
+    int num;
+    int temp;
+    for(k=0;k<M;k++)
+    {
+        cin>>node>>num;
+        tree[node].num=num;
+        tree[node].child=new int[num];
+        for(i=0;i<num;i++)
         {
-            flag=false;
-            break;
+            scanf("%d",&temp);
+            tree[node].child[i]=temp;
         }
     }
-    return flag;
-}
-    
-bool InsertionSort(int * origin,int * conver,int N)
-{
-    int count=0;
-    bool flag=false;
-    //cout<<"INsertion  "<<N<<endl;
-    int i,j,k;
-    int temp;
-    for(i=1;i<N;i++)
-    {
-        //cout<<i<<endl;
-        for(j=0;j<i;j++)
+    queue<int> currentlevel;//  current level
+        bool  firstflag=true;
+    currentlevel.push(1);
+    do{
+        int count=0;//  record this level's non leaf node
+        queue<int> nextlevel;//    next level
+        while(currentlevel.empty()==0)
         {
-            if(origin[i]<origin[j])
+            int cnode=currentlevel.front();
+            currentlevel.pop();
+            if(tree[cnode].num==0)
             {
-                temp=origin[i];
-                k=i;
-                while(k!=j)
+                count++;
+            }
+            else{
+                for(i=0;i<tree[cnode].num;i++)
                 {
-                    //cout<<k<<" "<<j<<endl;
-                    origin[k]=origin[k-1];
-                    k--;
-                    //cout<<k<<" "<<origin[k]<<k+1<<origin[k+1]<<endl;
-                    
+                    nextlevel.push(tree[cnode].child[i]);
                 }
-                origin[j]=temp;
             }
         }
-        flag=isequal(conver,origin,N);
-        if(count==1)
+        if(firstflag==true)
         {
-            cout<<"Insertion Sort"<<endl;
-            for(i=0;i<N-1;i++)
-                printf("%d ",origin[i]);
-           printf("%d",origin[N-1]);
-            return flag;
-        }
-        if(flag==true)
-        {
-            count++;
-        }
-        
-    }
-    return flag;
-}
-void merge(int * array,int low,int mid,int high) // [low,mid)  [mid,high)
-{
-    int temp[high-low];
-    int i=low;
-    int j=mid;
-    int k=0;
-    while(i<mid&&j<high)
-    {
-        if(array[i]<=array[j])
-        {
-            temp[k++]=array[i++];
+            printf("%d",count);
+            firstflag=false;
         }
         else
         {
-            temp[k++]=array[j++];
+            printf(" %d",count);
         }
+        currentlevel=nextlevel;
+    }while(currentlevel.size()!=0);
     
-    }
-    while(i<mid)
-    {
-        temp[k++]=array[i++];
-    }
-    while(j<high)
-    {
-        temp[k++]=array[j++];
-    }
-    for(i=low,k=0;i<high;i++,k++)
-    {
-        array[i]=temp[k];
-    }
-}
-
-bool MergeSort(int * origin,int * conver,int N)
-{
-    bool flag=false;
-    int count=0;
-    int i,j,k;
-    for(i=1;i<N;i=i*2)
-    {
-        for(j=0;j<N;j=j+2*i)
-        {
-            if(j+2*i<=N)
-            {
-                merge(origin,j,j+i,j+2*i);
-                //cout<<"merge(j,j+i,j+2*i)"<<endl;
-            }
-            else
-            {
-                if(j+i<=N)
-                {
-                    merge(origin,j,j+i,N);
-                    //cout<<"merge(j,j+i,N)"<<endl;
-                
-                }
-            }
-        }
-        flag=isequal(conver,origin,N);
-        if(count==1)
-         {
-         cout<<"Merge Sort"<<endl;
-         for(i=0;i<N-1;i++)
-         printf("%d ",origin[i]);
-         printf("%d",origin[N-1]);
-         return flag;
-         
-         }
-        if(flag==true)
-        {
-            count++;
-        }
-       
-    
-        
-    }
-    
-    return flag;
-
-}
-void mergeSort(int * origin,int * conver,int N)
-{
-    //bool flag=false;
-    //int count=0;
-    int i,j,k;
-    for(i=1;i<N;i=i*2)
-    {
-        for(j=0;j<N;j=j+2*i)
-        {
-            if(j+2*i<=N)
-            {
-                merge(origin,j,j+i,j+2*i);
-                //cout<<"merge(j,j+i,j+2*i)"<<endl;
-            }
-            else
-            {
-                //if(j+i<=N)
-                //{
-                    merge(origin,j,j+i,N);
-                    //cout<<"merge(j,j+i,N)"<<endl;
-                    
-                //}
-            }
-        }
-     
-        for(k=0;k<N;k++)
-            printf(" %d",origin[k]);
-        printf("\n");
-        
-        
-    }
-    
-   
-    
-}
-void compare(int * origin,int * conver,int N)
-{
-    bool flag=false;
-    int temp[N];
-    int i;
-    for(i=0;i<N;i++)
-    {
-        temp[i]=origin[i];
-    }
-    flag=InsertionSort(origin,conver,N);
-    if(flag==true)
-        return;
-    else
-    {
-    MergeSort(temp,conver,N);
-        //cout<<"213"<<endl;
-        return;
-    }
-}
-int main()
-{
-    //freopen("a.txt","r",stdin);
-    int N;
-    cin>>N;
-    int origin[N];
-    int conver[N];
-   /* int InsertArray[N];
-   int MergeArray[N];*/
-    int i,j,k;
-   for(i=0;i<N;i++)
-        scanf("%d",&origin[i]);
-    for(i=0;i<N;i++)
-        scanf("%d",&conver[i]);
-    /* for(i=0;i<N;i++)
-        printf("%d",origin[i]);
-    printf("\n");
-    for(i=0;i<N;i++)
-        printf("%d",conver[i]);
-    printf("\n");*/
-    mergeSort(origin,conver,N);
-    //compare(origin,conver,N);
-  // MergeSort(origin,conver,N);
-   
-   //InsertionSort(origin,conver,N);
     return 0;
 }
