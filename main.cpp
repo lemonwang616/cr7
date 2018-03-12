@@ -23,6 +23,7 @@ using std::vector;
 using std::map;
 using std::queue;
 #define PT 9999999
+#define MAX 101
 bool isPrime(int num)
 {
     if(num==0||num==1)
@@ -48,8 +49,12 @@ struct Tree{
     int num=0;
 };
 int records[101]={0};
-Tree tree[101];
-void DFS(Tree ttre,int level)
+
+int D[MAX][MAX];
+int n;//ÐÐÊý 
+int maxsum[MAX][MAX];
+
+/*void DFS(Tree ttre,int level)
 {
 	if(ttre.num==0)
 	{
@@ -61,50 +66,38 @@ void DFS(Tree ttre,int level)
 	{
 		DFS(tree[ttre.child[i]],level+1);
 	}
-}
-struct Check_intable
-{
+}*/
 
-  char id[20];
-  char sign_in_time[10];
-  char sign_out_time[10];
-};
-bool SmallerSort(Check_intable a,Check_intable b)
-{
-	if(strcmp(a.sign_in_time,b.sign_in_time)>0)
-		return false;
-	else
-		return true;
-	//return a.sign_in_time>b.sign_in_time;
-}
-bool GreaterSort(Check_intable a,Check_intable b)
-{
-	if(strcmp(a.sign_out_time,b.sign_out_time)<0)
-		return false;
-	else
-		return true;
-	//return a.sign_out_time>b.sign_out_time;
-}
 int main()
 {
- int M;
- cin>>M;
- vector<Check_intable> vec;
- int i,j;
- Check_intable temptable;
- for(i=0;i<M;i++)
- {
- 	scanf("%s %s %s",&temptable.id,&temptable.sign_in_time,&temptable.sign_out_time);
- //	cout<<i<<endl;
-	//scanf("%s",&temptable.sign_in_time);
-	//scanf("%s",&temptable.sign_out_time);
-	vec.push_back(temptable);
- }
-	sort(vec.begin(),vec.end(),SmallerSort);
-	cout<<vec[0].id<<" ";
-	//cout<<vec[0].id<<" "<<vec[0].sign_in_time<<endl;
-	sort(vec.begin(),vec.end(),GreaterSort);
-	//cout<<vec[0].id
-	cout<<vec[0].id<<" "<<vec[0].sign_out_time<<endl;
+ 	int i,j;
+ 	cin>>n;
+ 	for(i=1;i<=n;i++)
+ 	{
+ 		for(j=1;j<=i;j++)
+		 {
+		 	cin>>D[i][j];
+		 //	maxsum[i][j]=-1;
+		 }	
+	
+	 }
+	// cout<<"11"<<endl;
+	 for(i=1;i<=n;i++)
+	 	maxsum[n][i]=D[n][i];
+	//cout<<"22"<<endl;
+	for(i=n-1;i>=1;i--)
+	{
+		for(j=1;j<=i;j++)
+		{
+			maxsum[i][j]=std::max(maxsum[i+1][j],maxsum[i+1][j+1])+D[i][j];	
+		}	
+		for(j=1;j<=i;j++)
+		{
+			cout<<maxsum[i][j]<<" ";
+		}
+		cout<<endl;
+	}
+		
+		cout<<maxsum[1][1]<<endl;
     return 0;
 }
