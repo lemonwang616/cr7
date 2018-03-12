@@ -45,12 +45,27 @@ struct Tree{
     int * child=NULL;
     int num=0;
 };
+int records[101]={0};
+Tree tree[101];
+void DFS(Tree ttre,int level)
+{
+	if(ttre.num==0)
+	{
+		records[level]++;
+		return;
+	}
+	int i;
+	for(i=0;i<ttre.num;i++)
+	{
+		DFS(tree[ttre.child[i]],level+1);
+	}
+}
 int main()
 {
     int N,M;//the num of nodes   M the num of leafnodes
     cin>>N>>M;
     int i,j,k;
-    Tree tree[100];//vector
+   // Tree tree[101];//vector
     //vector<Tree>
     for(i=1;i<=N;i++)
     {
@@ -73,7 +88,16 @@ int main()
             tree[node].child[i]=temp;
         }
     }
-    queue<int> currentlevel;//  current level
+    DFS(tree[1],1);
+    temp=N-M;
+    printf("%d",records[1]);
+    num=records[1];
+    for(i=2;num<temp;i++)
+    {
+    	printf(" %d",records[i]);
+    	num=num+records[i];
+	}
+    /*queue<int> currentlevel;//  current level
         bool  firstflag=true;
     currentlevel.push(1);
     do{
@@ -104,7 +128,7 @@ int main()
             printf(" %d",count);
         }
         currentlevel=nextlevel;
-    }while(currentlevel.size()!=0);
+    }while(currentlevel.size()!=0);*/
     
     return 0;
 }
