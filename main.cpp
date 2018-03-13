@@ -133,29 +133,74 @@ int maxsub(int *a,int n)
 	}
 	return maxn;
 }
+struct polynomial
+{
+	int expone;
+	double coeffi;
+};
 int main()
 {
- 	int N;
- 	cin>>N;
- 	int a[N];
- 	int sum=0;
- 	int i;
- 	int flag=0;//whether or no less than 0
- 	for(i=0;i<N;i++)
- 	{
- 		scanf("%d",&a[i]);
- 		if(a[i]>=0)
- 		{
- 			flag=1;
-		 }
-	 }
-	 if(flag==0)
-	 {
-	 	cout<<0<<" "<<a[0]<<" "<<a[N-1];
-	 	return 0;
-	 }
-	 sum=maxsub(a,N);
-	 //sum=maxSubItem(a,0,N-1);
-	 cout<<sum<<" "<<a[start]<<" "<<a[end];
+	vector<polynomial>aa1;
+	vector<polynomial>aa2;
+	polynomial tempst;
+//	vec<int,double>aa1;
+//	vector<int,double>aa2;
+	vector<polynomial>::iterator pp1;
+	vector<polynomial>::iterator pp2;
+	map<int,double>mp;
+	map<int,double>::iterator it; 
+	//double C[1000000]={0};//A*B's exponents
+	//A*B 系数相乘 指数相加
+	int a1,a2;
+	int i,j,temp;
+	double coeffi;
+	int expone;
+	cin>>a1;
+	for(i=0;i<a1;i++)
+	{
+		scanf("%d %lf",&tempst.expone,&tempst.coeffi);
+		aa1.push_back(tempst);
+	}
+	cin>>a2;
+	for(i=0;i<a2;i++)
+	{
+		scanf("%d %lf",&tempst.expone,&tempst.coeffi);
+		aa2.push_back(tempst);
+	}
+	for(i=0;i<a1;i++)
+	{
+		for(j=0;j<a2;j++)
+		{
+			expone=aa1[i].expone+aa2[j].expone;
+			coeffi=aa1[i].coeffi*aa2[j].coeffi;
+			if(coeffi==0)
+			{
+				continue;
+			}
+			it=mp.find(expone);
+			if(it==mp.end())
+			{
+				mp.insert(std::make_pair(expone,coeffi));
+			}
+			else
+			{
+				double sumtemp=it->second+coeffi;
+				if(sumtemp==0)
+				{
+					mp.erase(expone);
+				}
+				it->second=it->second+coeffi;
+			}
+		}
+	}
+	int count=mp.size();
+	cout<<count;
+	map<int,double>::reverse_iterator rit;
+	for(rit=mp.rbegin();rit!=mp.rend();rit++)
+	{
+	
+		printf(" %d %.1lf",rit->first,rit->second);
+		//cout<<it->first<<" "<<it->second<<endl; 
+	}
     return 0;
 }
