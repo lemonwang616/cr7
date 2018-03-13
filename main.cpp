@@ -24,6 +24,7 @@ using std::map;
 using std::queue;
 #define PT 9999999
 #define MAX 101
+#define INF 99999999
 bool isPrime(int num)
 {
     if(num==0||num==1)
@@ -67,37 +68,94 @@ int maxsum[MAX][MAX];
 		DFS(tree[ttre.child[i]],level+1);
 	}
 }*/
-
+int maxSubItem(int *a,int low,int high)
+{
+    int s1,s2,s31,s32;
+    int i,j;
+    int sum;
+    int mid=(low+high)/2;
+    if(low==high)
+    {
+    	return a[low];
+	}
+	else
+	{
+		s1=maxSubItem(a,low,mid);
+		s2=maxSubItem(a,mid+1,high);
+		i=mid;
+		s31=a[i];
+		while((s31+a[i-1]>s31)&&(i>low))
+		{
+			s31=s31+a[i-1];
+			i--;
+		 } 
+		j=mid+1;
+		s32=a[j];
+		while((s32+a[j+1]>s32)&&(j<high))
+		{
+			s32=s32+a[j+1];
+			j++;
+		}
+		sum=s32+s31;
+	}
+	if(s1>sum)
+	{
+		sum=s1;
+	}
+	if(s2>sum)
+	{
+		sum=s2;
+	}
+	return sum;
+}
+int start,end;
+int maxsub(int *a,int n)
+{
+	int temp=0;
+	int maxn=-INF;
+	int i;
+	int k=0;//每次计算最大值时的头 
+	//最后返回的头和尾 
+	for(i=0;i<n;i++)
+	{
+		temp+=a[i];
+		if(temp>maxn)
+		{
+			maxn=temp;
+			start=k;
+			end=i;		
+		}
+		if(temp<0)
+		{
+			temp=0;
+			k=i+1;
+		}
+	}
+	return maxn;
+}
 int main()
 {
- 	int i,j;
- 	cin>>n;
- 	for(i=1;i<=n;i++)
+ 	int N;
+ 	cin>>N;
+ 	int a[N];
+ 	int sum=0;
+ 	int i;
+ 	int flag=0;//whether or no less than 0
+ 	for(i=0;i<N;i++)
  	{
- 		for(j=1;j<=i;j++)
-		 {
-		 	cin>>D[i][j];
-		 //	maxsum[i][j]=-1;
-		 }	
-	
+ 		scanf("%d",&a[i]);
+ 		if(a[i]>=0)
+ 		{
+ 			flag=1;
+		 }
 	 }
-	// cout<<"11"<<endl;
-	 for(i=1;i<=n;i++)
-	 	maxsum[n][i]=D[n][i];
-	//cout<<"22"<<endl;
-	for(i=n-1;i>=1;i--)
-	{
-		for(j=1;j<=i;j++)
-		{
-			maxsum[i][j]=std::max(maxsum[i+1][j],maxsum[i+1][j+1])+D[i][j];	
-		}	
-		for(j=1;j<=i;j++)
-		{
-			cout<<maxsum[i][j]<<" ";
-		}
-		cout<<endl;
-	}
-		
-		cout<<maxsum[1][1]<<endl;
+	 if(flag==0)
+	 {
+	 	cout<<0<<" "<<a[0]<<" "<<a[N-1];
+	 	return 0;
+	 }
+	 sum=maxsub(a,N);
+	 //sum=maxSubItem(a,0,N-1);
+	 cout<<sum<<" "<<a[start]<<" "<<a[end];
     return 0;
 }
