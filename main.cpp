@@ -133,74 +133,164 @@ int maxsub(int *a,int n)
 	}
 	return maxn;
 }
-struct polynomial
+long long chartoint(string str,long long radix)
 {
-	int expone;
-	double coeffi;
-};
+	long long num=0;
+	int i,j;
+	int len=str.length();
+	int temp;
+	//cout<<len<<"  23 "<<radix<<endl;
+	for(i=0;i<len;i++)
+	{
+		//cout<<str[i]<<" ";
+		if(str[i]>='0'&&str[i]<='9')
+	  {
+		temp=str[i]-'0';
+	  }
+	  	else 
+	  {
+		if(str[i]>='a'&&str[i]<='z')
+		{
+			temp=str[i]-'a'+10;
+		}
+	  }	
+	  	//printf("%d ",tem)
+	  	num=num*radix+temp;
+	//	cout<<temp<<" ";
+	}
+	//cout<<endl;
+	if(num<0)//判断是否溢出 
+	{
+		num=-1;
+	}
+	return num;
+}
+int thebigestnum(string str)
+{
+	int len=str.length();
+	int i,max=0,temp;
+	for(i=0;i<len;i++)
+	
+	{
+	    if(str[i]>='0'&&str[i]<='9')
+	  {
+		temp=str[i]-'0';
+	  }
+	  	else 
+	  {
+		if(str[i]>='a'&&str[i]<='z')
+		{
+			temp=str[i]-'a'+10;
+		}
+	  }	
+	  if(temp>max)
+	  {
+		max=temp;
+	  }	
+	}
+	max=max+1;
+//	cout<<max<<"zudazhi"<<endl;
+	return max;
+}
+
 int main()
 {
-	vector<polynomial>aa1;
-	vector<polynomial>aa2;
-	polynomial tempst;
-//	vec<int,double>aa1;
-//	vector<int,double>aa2;
-	vector<polynomial>::iterator pp1;
-	vector<polynomial>::iterator pp2;
-	map<int,double>mp;
-	map<int,double>::iterator it; 
-	//double C[1000000]={0};//A*B's exponents
-	//A*B 系数相乘 指数相加
-	int a1,a2;
-	int i,j,temp;
-	double coeffi;
-	int expone;
-	cin>>a1;
-	for(i=0;i<a1;i++)
+	string N1,N2;
+	//char N1[11];
+	//char N2[11];
+	int len1,len2;
+	int *I1;
+	int *I2;
+	int i,j,k;
+	int tag,radix;
+	long long knowradix,askedradix;
+	long long knowsum,askedsum;
+	string askedstr;
+	cin>>N1;
+	cin>>N2;
+	cin>>tag;
+	cin>>radix;
+	if(tag==1)
 	{
-		scanf("%d %lf",&tempst.expone,&tempst.coeffi);
-		aa1.push_back(tempst);
+		knowsum=chartoint(N1,radix);
+		knowradix=radix;
+		askedstr=N2;
+	//	cout<<tag<<endl;
 	}
-	cin>>a2;
-	for(i=0;i<a2;i++)
+	else
 	{
-		scanf("%d %lf",&tempst.expone,&tempst.coeffi);
-		aa2.push_back(tempst);
+		knowsum=chartoint(N2,radix);
+		knowradix=radix;
+		askedstr=N1;
 	}
-	for(i=0;i<a1;i++)
+//	cout<<askedstr<<" "<<knowsum<<endl; 
+	long long upperbond,lowerbond;// upperbond 上界 
+	
+	upperbond=knowsum+1;
+	lowerbond=thebigestnum(askedstr);
+	if(upperbond<lowerbond)
 	{
-		for(j=0;j<a2;j++)
+		printf("Impossible\n");
+		return 0;
+	}
+//	printf("%lld %lld\n",upperbond,lowerbond);
+	//printf("%lld %lld",upperbond,lowerbond);
+	//二分法 先判断利用利用下界计算，若大于则输出impossible
+	long long tempsum=chartoint(askedstr,lowerbond);
+	//cout<<tempsum<<endl;
+	if(tempsum==knowsum)
+	
+	{
+		printf("%lld",lowerbond);
+		return 0;
+	}
+	if(tempsum>knowsum)
+	{
+		printf("Impossible\n");
+		return 0;
+	}
+	long long mid;
+	int flag=0;
+	while(lowerbond<=upperbond)
+	{
+		mid=(upperbond+lowerbond)/2;
+		tempsum=chartoint(askedstr,mid);
+		if(tempsum==-1||tempsum>knowsum)
+    {
+      upperbond=mid-1;
+    }
+    else if(tempsum<knowsum)
+    {
+      lowerbond=mid+1;
+    }
+    else if(tempsum==knowsum)
+    {
+      cout<<mid;
+      return 0;
+    }
+		
+		/*if(tempsum==knowsum)
 		{
-			expone=aa1[i].expone+aa2[j].expone;
-			coeffi=aa1[i].coeffi*aa2[j].coeffi;
-			if(coeffi==0)
+			cout<<mid;
+			return 0;
+		}
+		else
+		{
+			if(tempsum==-1||tempsum>knowsum)
 			{
-				continue;
-			}
-			it=mp.find(expone);
-			if(it==mp.end())
-			{
-				mp.insert(std::make_pair(expone,coeffi));
+				upperbond=mid-1;
+					
 			}
 			else
 			{
-				double sumtemp=it->second+coeffi;
-				if(sumtemp==0)
-				{
-					mp.erase(expone);
-				}
-				it->second=it->second+coeffi;
+				lowerbond=mid+1;
+				
 			}
-		}
+		}*/
 	}
-	int count=mp.size();
-	cout<<count;
-	map<int,double>::reverse_iterator rit;
-	for(rit=mp.rbegin();rit!=mp.rend();rit++)
-	{
+		printf("Impossible\n");
 	
-		printf(" %d %.1lf",rit->first,rit->second);
-		//cout<<it->first<<" "<<it->second<<endl; 
-	}
+	//printf("%s %s %d %d\n",N1.c_str(),N2.c_str(),tag,radix);
+	
     return 0;
 }
